@@ -42,9 +42,13 @@ class RealmServiceImpl implements RealmService {
 
   @override
   void save<T extends RealmObject>(T object) {
-    realm.writeAsync(() {
-      realm.add(object, update: true);
-    });
+    try {
+      realm.writeAsync(() {
+        realm.add(object, update: true);
+      });
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
