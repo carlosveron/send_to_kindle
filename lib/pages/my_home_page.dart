@@ -1,6 +1,9 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:realm/realm.dart';
+import 'package:send_to_kindle/main.dart';
+import 'package:send_to_kindle/shared/services/realm/models/books.dart';
 import 'package:send_to_kindle/shared/utils/utils.dart';
 
 class MyHomePage extends ConsumerStatefulWidget {
@@ -45,6 +48,12 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
                         setState(() {
                           books.add(result.files.first);
                         });
+                        realmService.save<Books>(Books(
+                          Uuid.v4(),
+                          DateTime.now(),
+                          result.files.first.path ?? '',
+                          result.files.first.size,
+                        ));
                       } else {
                         debugPrint('not supported');
                       }
