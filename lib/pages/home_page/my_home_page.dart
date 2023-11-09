@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
@@ -19,9 +17,7 @@ class MyHomePage extends ConsumerStatefulWidget {
 }
 
 class _MyHomePageState extends ConsumerState<MyHomePage> {
-  List<String> ext = ['epub', 'pdf'];
   List<Books>? books;
-
   @override
   Widget build(BuildContext context) {
     final userSettings = ref.watch(userSettingsProvider);
