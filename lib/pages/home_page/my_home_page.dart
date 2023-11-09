@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mime/mime.dart';
 import 'package:realm/realm.dart';
 import 'package:send_to_kindle/main.dart';
 import 'package:send_to_kindle/pages/settings_page/settings_page.dart';
@@ -50,29 +53,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
                     Center(
                       child: ElevatedButton(
                           onPressed: () async {
-                            bool hasPermission =
-                                await Utils.requestStoragePermission();
-                            if (!hasPermission) {
-                              return;
-                            }
-
-                            final result =
-                                await FilePicker.platform.pickFiles();
-                            if (result == null) {
-                              return;
-                            }
-                            if (ext.contains(result.files.first.extension)) {
-                              final book = Books(
-                                Uuid.v4(),
-                                DateTime.now(),
-                                result.files.first.path ?? '',
-                                result.files.first.size,
-                              );
-
-                              database.save<Books>(book);
-                            } else {
-                              debugPrint('only support [epub,pdf]');
-                            }
+                            _getFile();
                           },
                           child: const Text('Upload')),
                     ),
@@ -104,6 +85,56 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
               );
             }),
       ),
+      floatingActionButton: Visibility(
+        visible: ref.watch(booksProvider)!.isNotEmpty,
+        child: FloatingActionButton(
+          onPressed: () async {
+            _getFile();
+          },
+          child: const Icon(Icons.add),
+        ),
+      ),
     );
+  }
+
+  bool isEpub(String filePath) {
+    try {
+      File file = File(filePath);
+      RandomAccessFile randomAccessFile = file.openSync(mode: FileMode.read);
+      List<int> signature =
+          randomAccessFile.readSync(4); // Read the first 4 bytes
+      randomAccessFile.closeSync();
+
+      // Check if the file starts with a ZIP archive signature
+      return signature.length == 4 &&
+          String.fromCharCodes(signature) == 'PK\x03\x04';
+    } catch (e) {
+      return false;
+    }
+  }
+
+  void _getFile() async {
+    bool hasPermission = await Utils.requestStoragePermission();
+    if (!hasPermission) {
+      return;
+    }
+
+    final result = await FilePicker.platform.pickFiles();
+    if (result == null) {
+      return;
+    }
+
+    if (isEpub(result.files.first.path ?? '')) {
+      final book = Books(
+        result.files.first.path ?? '',
+        DateTime.now(),
+        result.files.first.path ?? '',
+        result.files.first.size,
+      );
+
+      database.save<Books>(book);
+    } else {
+      debugPrint('only support [epub,pdf]');
+    }
   }
 }
