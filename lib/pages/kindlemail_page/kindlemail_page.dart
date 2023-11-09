@@ -69,7 +69,7 @@ class _KindleEmailPageState extends ConsumerState<KindleEmailPage> {
                       final settings = UserSettings(
                         Uuid.v4(),
                         true,
-                        'english',
+                        'English',
                         kindleEmail: [_emailController.text],
                       );
                       database.save<UserSettings>(settings);
