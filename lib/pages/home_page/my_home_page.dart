@@ -114,7 +114,20 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
 
       database.save<Books>(book);
     } else {
-      debugPrint('only support [epub,pdf]');
+      _showScafoldMessenger();
     }
+  }
+
+  _showScafoldMessenger() {
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: SizedBox(
+          child: SizedBox(
+            width: 200,
+            child: Text(
+                'Oops! It seems like the file extension you provided is not supported. '),
+          ),
+        ),
+        backgroundColor: Colors.red,
+        duration: Duration(seconds: 5)));
   }
 }
