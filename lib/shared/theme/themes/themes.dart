@@ -5,7 +5,7 @@ ThemeData get lightTheme => ThemeData(
       colorScheme: _lightColorScheme,
       useMaterial3: true,
       floatingActionButtonTheme: FloatingActionButtonThemeData(
-        backgroundColor: _darkColorScheme.primary,
+        backgroundColor: _lightColorScheme.primary,
       ),
       cardTheme: CardTheme(
         color: _lightColorScheme.onPrimary,
@@ -19,7 +19,7 @@ ThemeData get darkTheme => ThemeData(
       colorScheme: _darkColorScheme,
       useMaterial3: true,
       floatingActionButtonTheme: FloatingActionButtonThemeData(
-        backgroundColor: _lightColorScheme.primary,
+        backgroundColor: _darkColorScheme.primary,
       ),
       appBarTheme: const AppBarTheme(
         centerTitle: true,
