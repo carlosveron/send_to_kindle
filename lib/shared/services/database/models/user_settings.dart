@@ -6,6 +6,6 @@ class _UserSettings {
   @PrimaryKey()
   late Uuid id;
   late List<String> kindleEmail;
-  late String theme;
+  late bool isDarkThemeEnabled;
   late String language;
 }

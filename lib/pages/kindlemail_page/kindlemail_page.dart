@@ -68,7 +68,7 @@ class _KindleEmailPageState extends ConsumerState<KindleEmailPage> {
                       _isError = false;
                       final settings = UserSettings(
                         Uuid.v4(),
-                        'dark',
+                        true,
                         'english',
                         kindleEmail: [_emailController.text],
                       );

@@ -10,12 +10,12 @@ class UserSettings extends _UserSettings
     with RealmEntity, RealmObjectBase, RealmObject {
   UserSettings(
     Uuid id,
-    String theme,
+    bool isDarkThemeEnabled,
     String language, {
     Iterable<String> kindleEmail = const [],
   }) {
     RealmObjectBase.set(this, 'id', id);
-    RealmObjectBase.set(this, 'theme', theme);
+    RealmObjectBase.set(this, 'isDarkThemeEnabled', isDarkThemeEnabled);
     RealmObjectBase.set(this, 'language', language);
     RealmObjectBase.set<RealmList<String>>(
         this, 'kindleEmail', RealmList<String>(kindleEmail));
@@ -36,9 +36,11 @@ class UserSettings extends _UserSettings
       throw RealmUnsupportedSetError();
 
   @override
-  String get theme => RealmObjectBase.get<String>(this, 'theme') as String;
+  bool get isDarkThemeEnabled =>
+      RealmObjectBase.get<bool>(this, 'isDarkThemeEnabled') as bool;
   @override
-  set theme(String value) => RealmObjectBase.set(this, 'theme', value);
+  set isDarkThemeEnabled(bool value) =>
+      RealmObjectBase.set(this, 'isDarkThemeEnabled', value);
 
   @override
   String get language =>
@@ -62,7 +64,7 @@ class UserSettings extends _UserSettings
       SchemaProperty('id', RealmPropertyType.uuid, primaryKey: true),
       SchemaProperty('kindleEmail', RealmPropertyType.string,
           collectionType: RealmCollectionType.list),
-      SchemaProperty('theme', RealmPropertyType.string),
+      SchemaProperty('isDarkThemeEnabled', RealmPropertyType.bool),
       SchemaProperty('language', RealmPropertyType.string),
     ]);
   }
