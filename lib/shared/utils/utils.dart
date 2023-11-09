@@ -49,4 +49,20 @@ class Utils {
       return false;
     }
   }
+
+  static bool isPdf(String filePath) {
+    try {
+      File file = File(filePath);
+      RandomAccessFile randomAccessFile = file.openSync(mode: FileMode.read);
+      List<int> signature =
+          randomAccessFile.readSync(5); // Read the first 5 bytes
+      randomAccessFile.closeSync();
+
+      // Check if the file starts with the PDF signature
+      return signature.length == 5 &&
+          String.fromCharCodes(signature) == '%PDF-';
+    } catch (e) {
+      return false;
+    }
+  }
 }
