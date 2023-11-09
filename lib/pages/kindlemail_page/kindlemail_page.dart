@@ -4,6 +4,7 @@ import 'package:send_to_kindle/main.dart';
 import 'package:send_to_kindle/pages/home_page/my_home_page.dart';
 import 'package:send_to_kindle/shared/services/provider/providers.dart';
 import 'package:send_to_kindle/shared/services/realm/models/user_settings.dart';
+import 'package:send_to_kindle/shared/utils/utils.dart';
 
 class KindleEmailPage extends ConsumerStatefulWidget {
   const KindleEmailPage({super.key});
@@ -14,16 +15,18 @@ class KindleEmailPage extends ConsumerStatefulWidget {
 }
 
 class _KindleEmailPageState extends ConsumerState<KindleEmailPage> {
-  final emailController = TextEditingController();
-  late List<UserSettings> userSettings;
+  final _emailController = TextEditingController();
+  late List<UserSettings> _userSettings;
+  bool _isEmailValid = false;
+  bool _isError = false;
   @override
   void initState() {
     super.initState();
 
     setState(() {
-      userSettings = realmService.getAll<UserSettings>();
-      if (userSettings.isNotEmpty &&
-          userSettings.first.kindleEmail.isNotEmpty) {
+      _userSettings = realmService.getAll<UserSettings>();
+      if (_userSettings.isNotEmpty &&
+          _userSettings.first.kindleEmail.isNotEmpty) {
         _navigateToHomePage();
       }
     });
@@ -31,8 +34,8 @@ class _KindleEmailPageState extends ConsumerState<KindleEmailPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (userSettings.isNotEmpty) {
-      ref.read(userSettingsProvider.notifier).state = userSettings.first;
+    if (_userSettings.isNotEmpty) {
+      ref.read(userSettingsProvider.notifier).state = _userSettings.first;
     }
     return Scaffold(
         appBar: AppBar(
@@ -45,21 +48,42 @@ class _KindleEmailPageState extends ConsumerState<KindleEmailPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextFormField(
-                controller: emailController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
+                controller: _emailController,
+                decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                    color: _isError ? Colors.red : Colors.white,
+                  )),
+                  //fillColor: _isError ? Colors.red : Colors.white,
+                  filled: true,
+                  labelText: 'Kindle Email',
                   hintText: 'Your Kindle Email',
                 ),
-                validator: (value) {
-                  if (value == null) {
-                    return 'Text';
+                onChanged: (value) {
+                  if (value.isEmpty) {
+                    setState(() {
+                      _isError = false;
+                    });
                   }
-                  return '';
+                  setState(() {
+                    _isEmailValid = Utils.isKindleEmailValid(value);
+                  });
                 },
               ),
               const SizedBox(height: 10),
               ElevatedButton(
-                onPressed: _navigateToHomePage,
+                onPressed: () {
+                  FocusScope.of(context).unfocus();
+                  setState(() {
+                    if (_isEmailValid) {
+                      _isError = false;
+                      debugPrint('Email is valid: ${_emailController.text}');
+                    } else {
+                      _isError = true;
+                      debugPrint('Invalid email');
+                    }
+                  });
+                },
                 child: const Text('Save'),
               )
             ],
