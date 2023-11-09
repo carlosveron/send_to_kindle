@@ -33,4 +33,20 @@ class Utils {
     }
     return ThemeMode.light;
   }
+
+  static isEpub(String filePath) {
+    try {
+      File file = File(filePath);
+      RandomAccessFile randomAccessFile = file.openSync(mode: FileMode.read);
+      List<int> signature =
+          randomAccessFile.readSync(4); // Read the first 4 bytes
+      randomAccessFile.closeSync();
+
+      // Check if the file starts with a ZIP archive signature
+      return signature.length == 4 &&
+          String.fromCharCodes(signature) == 'PK\x03\x04';
+    } catch (e) {
+      return false;
+    }
+  }
 }
