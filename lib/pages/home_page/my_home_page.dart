@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:realm/realm.dart';
 import 'package:send_to_kindle/main.dart';
+import 'package:send_to_kindle/pages/settings_page/settings_page.dart';
 import 'package:send_to_kindle/shared/services/database/models/books.dart';
 import 'package:send_to_kindle/shared/services/provider/providers.dart';
 import 'package:send_to_kindle/shared/utils/utils.dart';
@@ -24,6 +25,13 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text('📖'),
+        actions: [
+          IconButton(
+            onPressed: () => Navigator.of(context)
+                .push(MaterialPageRoute(builder: (_) => const SettingsPage())),
+            icon: const Icon(Icons.settings),
+          )
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
