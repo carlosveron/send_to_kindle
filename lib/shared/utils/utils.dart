@@ -18,4 +18,12 @@ class Utils {
       return true;
     }
   }
+
+  static bool isKindleEmailValid(String email) {
+    // Kindle email addresses typically end with @kindle.com
+    RegExp kindleEmailRegex = RegExp(r'^[\w-]+(\.[\w-]+)*@kindle\.com$');
+
+    // Check if the email matches the Kindle email pattern
+    return kindleEmailRegex.hasMatch(email);
+  }
 }
