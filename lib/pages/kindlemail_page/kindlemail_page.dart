@@ -66,13 +66,7 @@ class _KindleEmailPageState extends ConsumerState<KindleEmailPage> {
                   setState(() {
                     if (_isEmailValid) {
                       _isError = false;
-                      final settings = UserSettings(
-                        Uuid.v4(),
-                        true,
-                        'English',
-                        kindleEmail: [_emailController.text],
-                      );
-                      database.save<UserSettings>(settings);
+                      database.save<UserSettings>(_defaultSettings());
                       _navigateToHomePage();
                       return;
                     }
@@ -92,4 +86,11 @@ class _KindleEmailPageState extends ConsumerState<KindleEmailPage> {
           MaterialPageRoute(builder: (_) => const MyHomePage()));
     });
   }
+
+  _defaultSettings() => UserSettings(
+        Uuid.v4(),
+        true,
+        'English',
+        kindleEmail: [_emailController.text],
+      );
 }
