@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:realm/realm.dart';
 import 'package:send_to_kindle/main.dart';
 import 'package:send_to_kindle/shared/services/database/models/user_settings.dart';
+import 'package:send_to_kindle/shared/services/provider/providers.dart';
+import 'package:send_to_kindle/shared/utils/utils.dart';
 
 class SettingsPage extends ConsumerStatefulWidget {
   const SettingsPage({super.key});
@@ -12,36 +14,37 @@ class SettingsPage extends ConsumerStatefulWidget {
 }
 
 class _SettingsPageState extends ConsumerState<SettingsPage> {
-  String selectedLanguage = "English";
-  bool isDarkThemeEnabled = false;
-  List<String> savedEmails = [];
-  late List<UserSettings> _userSettings;
+  late String selectedLanguage;
+  late bool isDarkThemeEnabled;
+  late List<String> savedEmails;
+  late UserSettings _userSettings;
   @override
   void initState() {
     super.initState();
-    loadSettings();
   }
 
-  void loadSettings() async {
-    setState(() {
-      _userSettings = database.getAll<UserSettings>();
-    });
+  void loadSettings() {
+    _userSettings = ref.watch(userSettingsProvider)!;
+
+    selectedLanguage = _userSettings.language;
+    isDarkThemeEnabled = _userSettings.isDarkThemeEnabled;
+    savedEmails = _userSettings.kindleEmail;
   }
 
-  void saveSettings() async {
-    // prefs.setString('language', selectedLanguage);
-    // prefs.setBool('darkTheme', isDarkThemeEnabled);
-    // prefs.setStringList('emails', savedEmails);
+  void saveSettings() {
     final settings = UserSettings(
       Uuid.v4(),
       isDarkThemeEnabled,
       selectedLanguage,
       kindleEmail: savedEmails,
     );
+    database.save<UserSettings>(settings);
+    ref.read(userSettingsProvider.notifier).state = settings;
   }
 
   @override
   Widget build(BuildContext context) {
+    loadSettings();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
@@ -55,8 +58,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               setState(() {
                 selectedLanguage = value!;
               });
+              saveSettings();
             },
-            items: ["English", "Spanish", "French"]
+            items: ["English", "Portuguese"]
                 .map<DropdownMenuItem<String>>(
                   (String value) => DropdownMenuItem<String>(
                     value: value,
@@ -71,6 +75,13 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             onChanged: (value) {
               setState(() {
                 isDarkThemeEnabled = value;
+                saveSettings();
+                debugPrint('$isDarkThemeEnabled');
+                if (isDarkThemeEnabled) {
+                  Utils.themeMode(isDarkThemeEnabled);
+                  return;
+                }
+                Utils.themeMode(isDarkThemeEnabled);
               });
             },
           ),
@@ -114,11 +125,5 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         child: const Icon(Icons.add),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    saveSettings();
-    super.dispose();
   }
 }
