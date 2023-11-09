@@ -4,8 +4,6 @@ import 'package:realm/realm.dart';
 import 'package:send_to_kindle/main.dart';
 import 'package:send_to_kindle/pages/home_page/my_home_page.dart';
 import 'package:send_to_kindle/shared/services/database/models/user_settings.dart';
-import 'package:send_to_kindle/shared/services/provider/providers.dart';
-
 import 'package:send_to_kindle/shared/utils/utils.dart';
 
 class KindleEmailPage extends ConsumerStatefulWidget {
@@ -18,14 +16,12 @@ class KindleEmailPage extends ConsumerStatefulWidget {
 
 class _KindleEmailPageState extends ConsumerState<KindleEmailPage> {
   final _emailController = TextEditingController();
-  late List<UserSettings> _userSettings;
+
   bool _isEmailValid = false;
   bool _isError = false;
   @override
   void initState() {
     super.initState();
-
-    _userSettings = database.getAll<UserSettings>();
   }
 
   @override
