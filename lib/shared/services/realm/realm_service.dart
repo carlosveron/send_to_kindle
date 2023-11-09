@@ -47,7 +47,7 @@ class RealmServiceImpl implements RealmService {
         realm.add(object, update: true);
       });
     } catch (e) {
-      rethrow;
+      throw Exception(e);
     }
   }
 
