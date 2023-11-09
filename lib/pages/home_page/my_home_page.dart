@@ -1,5 +1,6 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:realm/realm.dart';
 import 'package:send_to_kindle/main.dart';
@@ -21,6 +22,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final userSettings = ref.watch(userSettingsProvider);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -85,17 +87,15 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
                                 title: Text(books?[index].title ??
                                     books![index].path.split('/').last),
                                 onTap: () async {
-                                  // final Email email = Email(
-                                  //   body: 'Email body',
-                                  //   subject: 'Email subject',
-                                  //   recipients: ['example@example.com'],
-                                  //   cc: ['cc@example.com'],
-                                  //   bcc: ['bcc@example.com'],
-                                  //   attachmentPaths: [books[index].path ?? ''],
-                                  //   isHTML: false,
-                                  // );
+                                  final email = Email(
+                                    body: 'To Kindle',
+                                    subject: 'book to kindle',
+                                    recipients: userSettings!.kindleEmail,
+                                    attachmentPaths: [books?[index].path ?? ''],
+                                    isHTML: false,
+                                  );
 
-                                  // await FlutterEmailSender.send(email);
+                                  await FlutterEmailSender.send(email);
                                 },
                               )),
                     )
