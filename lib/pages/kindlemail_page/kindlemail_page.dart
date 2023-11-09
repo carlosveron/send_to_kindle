@@ -25,20 +25,11 @@ class _KindleEmailPageState extends ConsumerState<KindleEmailPage> {
   void initState() {
     super.initState();
 
-    setState(() {
-      _userSettings = database.getAll<UserSettings>();
-    });
-    if (_userSettings.isNotEmpty &&
-        _userSettings.first.kindleEmail.isNotEmpty) {
-      _navigateToHomePage();
-    }
+    _userSettings = database.getAll<UserSettings>();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_userSettings.isNotEmpty) {
-      ref.read(userSettingsProvider.notifier).state = _userSettings.first;
-    }
     return Scaffold(
         appBar: AppBar(
           title: const Text('📭'),
@@ -99,6 +90,10 @@ class _KindleEmailPageState extends ConsumerState<KindleEmailPage> {
         ));
   }
 
-  _navigateToHomePage() => Navigator.of(context)
-      .pushReplacement(MaterialPageRoute(builder: (_) => const MyHomePage()));
+  _navigateToHomePage() {
+    Future(() {
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const MyHomePage()));
+    });
+  }
 }
