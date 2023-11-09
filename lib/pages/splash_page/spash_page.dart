@@ -26,7 +26,9 @@ class _SplashPageState extends ConsumerState<SplashPage> {
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(userSettingsProvider.notifier).state = _userSettings.first;
+      if (_userSettings.isNotEmpty) {
+        ref.read(userSettingsProvider.notifier).state = _userSettings.first;
+      }
       Future(() {
         Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (_) => _userSettings.isEmpty
