@@ -40,43 +40,48 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
             builder: (context, snapshot) {
               books = snapshot.data?.results.toList();
               Future(() => ref.read(booksProvider.notifier).state = books);
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  if (books == null || books!.isEmpty) ...[
-                    Center(
-                      child: ElevatedButton(
-                          onPressed: () async {
-                            _getFile();
-                          },
-                          child: const Text('Upload')),
-                    ),
-                  ] else ...[
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height - 110,
-                      width: MediaQuery.of(context).size.width,
-                      child: ListView.separated(
-                          itemCount: books?.length ?? 0,
-                          separatorBuilder: (context, index) => const Divider(),
-                          itemBuilder: (context, index) => ListTile(
-                                title: Text(books?[index].title ??
-                                    books![index].path.split('/').last),
-                                onTap: () async {
-                                  final email = Email(
-                                    body: 'To Kindle',
-                                    subject: 'book to kindle',
-                                    recipients: userSettings!.kindleEmail,
-                                    attachmentPaths: [books?[index].path ?? ''],
-                                    isHTML: false,
-                                  );
+              return SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    if (books == null || books!.isEmpty) ...[
+                      Center(
+                        child: ElevatedButton(
+                            onPressed: () async {
+                              _getFile();
+                            },
+                            child: const Text('Upload')),
+                      ),
+                    ] else ...[
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height - 110,
+                        width: MediaQuery.of(context).size.width,
+                        child: ListView.separated(
+                            itemCount: books?.length ?? 0,
+                            separatorBuilder: (context, index) =>
+                                const Divider(),
+                            itemBuilder: (context, index) => ListTile(
+                                  title: Text(books?[index].title ??
+                                      books![index].path.split('/').last),
+                                  onTap: () async {
+                                    final email = Email(
+                                      body: 'To Kindle',
+                                      subject: 'book to kindle',
+                                      recipients: userSettings!.kindleEmail,
+                                      attachmentPaths: [
+                                        books?[index].path ?? ''
+                                      ],
+                                      isHTML: false,
+                                    );
 
-                                  await FlutterEmailSender.send(email);
-                                },
-                              )),
-                    )
-                  ]
-                ],
+                                    await FlutterEmailSender.send(email);
+                                  },
+                                )),
+                      )
+                    ]
+                  ],
+                ),
               );
             }),
       ),
@@ -104,7 +109,8 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
       return;
     }
 
-    if (Utils.isEpub(result.files.first.path ?? '')) {
+    if (Utils.isEpub(result.files.first.path ?? '') ||
+        Utils.isPdf(result.files.first.path ?? '')) {
       final book = Books(
         result.files.first.path ?? '',
         DateTime.now(),
