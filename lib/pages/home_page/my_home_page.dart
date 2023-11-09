@@ -4,7 +4,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mime/mime.dart';
 import 'package:realm/realm.dart';
 import 'package:send_to_kindle/main.dart';
 import 'package:send_to_kindle/pages/settings_page/settings_page.dart';
@@ -86,7 +85,8 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
             }),
       ),
       floatingActionButton: Visibility(
-        visible: ref.watch(booksProvider)!.isNotEmpty,
+        visible: ref.watch(booksProvider) != null &&
+            ref.watch(booksProvider)!.isNotEmpty,
         child: FloatingActionButton(
           onPressed: () async {
             _getFile();
