@@ -4,7 +4,7 @@ part 'books.g.dart';
 @RealmModel()
 class _Books {
   @PrimaryKey()
-  late Uuid id;
+  late String id;
   late DateTime createdAt;
   late String path;
   late int fileSize;

@@ -8,7 +8,7 @@ part of 'books.dart';
 
 class Books extends _Books with RealmEntity, RealmObjectBase, RealmObject {
   Books(
-    Uuid id,
+    String id,
     DateTime createdAt,
     String path,
     int fileSize, {
@@ -38,9 +38,9 @@ class Books extends _Books with RealmEntity, RealmObjectBase, RealmObject {
   Books._();
 
   @override
-  Uuid get id => RealmObjectBase.get<Uuid>(this, 'id') as Uuid;
+  String get id => RealmObjectBase.get<String>(this, 'id') as String;
   @override
-  set id(Uuid value) => RealmObjectBase.set(this, 'id', value);
+  set id(String value) => RealmObjectBase.set(this, 'id', value);
 
   @override
   DateTime get createdAt =>
@@ -116,7 +116,7 @@ class Books extends _Books with RealmEntity, RealmObjectBase, RealmObject {
   static SchemaObject _initSchema() {
     RealmObjectBase.registerFactory(Books._);
     return const SchemaObject(ObjectType.realmObject, Books, 'Books', [
-      SchemaProperty('id', RealmPropertyType.uuid, primaryKey: true),
+      SchemaProperty('id', RealmPropertyType.string, primaryKey: true),
       SchemaProperty('createdAt', RealmPropertyType.timestamp),
       SchemaProperty('path', RealmPropertyType.string),
       SchemaProperty('fileSize', RealmPropertyType.int),
