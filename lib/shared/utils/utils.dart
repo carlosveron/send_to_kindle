@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class Utils {
@@ -25,5 +25,12 @@ class Utils {
 
     // Check if the email matches the Kindle email pattern
     return kindleEmailRegex.hasMatch(email);
+  }
+
+  static ThemeMode themeMode(bool isDarkThemeEnabled) {
+    if (isDarkThemeEnabled) {
+      return ThemeMode.dark;
+    }
+    return ThemeMode.light;
   }
 }
