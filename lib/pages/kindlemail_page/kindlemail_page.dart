@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:realm/realm.dart';
 import 'package:send_to_kindle/main.dart';
 import 'package:send_to_kindle/pages/home_page/my_home_page.dart';
+import 'package:send_to_kindle/shared/services/database/models/user_settings.dart';
 import 'package:send_to_kindle/shared/services/provider/providers.dart';
-import 'package:send_to_kindle/shared/services/realm/models/user_settings.dart';
+
 import 'package:send_to_kindle/shared/utils/utils.dart';
 
 class KindleEmailPage extends ConsumerStatefulWidget {
@@ -24,12 +26,12 @@ class _KindleEmailPageState extends ConsumerState<KindleEmailPage> {
     super.initState();
 
     setState(() {
-      _userSettings = realmService.getAll<UserSettings>();
-      if (_userSettings.isNotEmpty &&
-          _userSettings.first.kindleEmail.isNotEmpty) {
-        _navigateToHomePage();
-      }
+      _userSettings = database.getAll<UserSettings>();
     });
+    if (_userSettings.isNotEmpty &&
+        _userSettings.first.kindleEmail.isNotEmpty) {
+      _navigateToHomePage();
+    }
   }
 
   @override
@@ -77,11 +79,17 @@ class _KindleEmailPageState extends ConsumerState<KindleEmailPage> {
                   setState(() {
                     if (_isEmailValid) {
                       _isError = false;
-                      debugPrint('Email is valid: ${_emailController.text}');
-                    } else {
-                      _isError = true;
-                      debugPrint('Invalid email');
+                      final settings = UserSettings(
+                        Uuid.v4(),
+                        'dark',
+                        'english',
+                        kindleEmail: [_emailController.text],
+                      );
+                      database.save<UserSettings>(settings);
+                      _navigateToHomePage();
+                      return;
                     }
+                    _isError = true;
                   });
                 },
                 child: const Text('Save'),

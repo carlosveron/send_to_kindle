@@ -1,6 +1,6 @@
 import 'package:realm/realm.dart';
 
-abstract class RealmService {
+abstract class DataBaseService {
   Stream<RealmResultsChanges<T>> getResultsAsStream<T extends RealmObject>();
 
   List<T> query<T extends RealmObject>(String query,
@@ -19,10 +19,10 @@ abstract class RealmService {
   void deleteAll();
 }
 
-class RealmServiceImpl implements RealmService {
+class DataBaseServiceImpl implements DataBaseService {
   final Realm realm;
 
-  RealmServiceImpl(this.realm);
+  DataBaseServiceImpl(this.realm);
 
   @override
   Stream<RealmResultsChanges<T>> getResultsAsStream<T extends RealmObject>() {

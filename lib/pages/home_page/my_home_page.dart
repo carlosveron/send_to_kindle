@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:realm/realm.dart';
 import 'package:send_to_kindle/main.dart';
+import 'package:send_to_kindle/shared/services/database/models/books.dart';
 import 'package:send_to_kindle/shared/services/provider/providers.dart';
-import 'package:send_to_kindle/shared/services/realm/models/books.dart';
 import 'package:send_to_kindle/shared/utils/utils.dart';
 
 class MyHomePage extends ConsumerStatefulWidget {
@@ -28,7 +28,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: StreamBuilder<RealmResultsChanges<Books>>(
-            stream: realmService.getResultsAsStream(),
+            stream: database.getResultsAsStream(),
             builder: (context, snapshot) {
               books = snapshot.data?.results.toList();
               Future(() => ref.read(booksProvider.notifier).state = books);
@@ -59,7 +59,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
                                 result.files.first.size,
                               );
 
-                              realmService.save<Books>(book);
+                              database.save<Books>(book);
                             } else {
                               debugPrint('only support [epub,pdf]');
                             }
