@@ -18,13 +18,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   late bool isDarkThemeEnabled;
   late List<String> savedEmails;
   late UserSettings _userSettings;
-  @override
-  void initState() {
-    super.initState();
-  }
 
   void loadSettings() {
-    _userSettings = ref.watch(userSettingsProvider)!;
+    _userSettings = ref.watch(userSettingsProvider) ??
+        database.getAll<UserSettings>().first;
 
     selectedLanguage = _userSettings.language;
     isDarkThemeEnabled = _userSettings.isDarkThemeEnabled;
